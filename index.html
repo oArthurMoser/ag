@@ -55,13 +55,21 @@
                 </section>
 
                 <section class="bg-gray-50 p-5 rounded-lg border">
-                    <h2 class="text-xl font-semibold text-gray-700 mb-4">2. Parâmetros do AG (Fixos)</h2>
-                    <div class="space-y-2">
+                    <h2 class="text-xl font-semibold text-gray-700 mb-4">2. Parâmetros do AG</h2>
+                    <div class="space-y-4">
+                        
+                        <div>
+                            <label for="numGeracoesMax" class="block text-sm font-medium text-gray-600 mb-2">Gerações Máximas (1-1000):</label>
+                            <input type="number" id="numGeracoesMax" min="1" max="1000" value="100" class="w-full p-2 border border-gray-300 rounded-md">
+                        </div>
+                        <div>
+                            <label for="limiteParada" class="block text-sm font-medium text-gray-600 mb-2">Parada Antecipada (1-100):</label>
+                            <input type="number" id="limiteParada" min="1" max="100" value="5" class="w-full p-2 border border-gray-300 rounded-md">
+                        </div>
+
                         <div class="text-sm text-gray-500 pt-2">
                             <p>• População: <strong class="text-gray-700">Fib(N)</strong>.</p>
-                            <p>• Gerações Máximas: <strong class="text-gray-700">100</strong>.</p>
                             <p>• Torneio: <strong class="text-gray-700">3</strong>.</p>
-                            <p>• Parada Antecipada: <strong class="text-gray-700">5 gerações sem melhoria</strong>.</p>
                         </div>
                     </div>
                 </section>
@@ -122,6 +130,9 @@
         const matrizContainerEl = document.getElementById('matrizContainer');
         const btnGerarAleatoriaEl = document.getElementById('btnGerarAleatoria');
         
+        const numGeracoesMaxEl = document.getElementById('numGeracoesMax');
+        const limiteParadaEl = document.getElementById('limiteParada');
+
         const btnIniciarEl = document.getElementById('btnIniciar');
         const loadingEl = document.getElementById('loading');
         const resultadosEl = document.getElementById('resultados');
@@ -162,12 +173,24 @@
                 return;
             }
 
+            const numGeracoesMax = parseInt(numGeracoesMaxEl.value);
+            const limiteParada = parseInt(limiteParadaEl.value);
+
+            if (isNaN(numGeracoesMax) || numGeracoesMax < 1 || numGeracoesMax > 1000) {
+                 alert("Por favor, insira um número de Gerações Máximas entre 1 e 1000.");
+                 return;
+            }
+            if (isNaN(limiteParada) || limiteParada < 1 || limiteParada > 100) {
+                 alert("Por favor, insira um número de Parada Antecipada entre 1 e 100.");
+                 return;
+            }
+
             logEl.textContent = '';
             resultadosEl.classList.add('hidden');
             loadingEl.classList.remove('hidden');
 
             setTimeout(() => {
-                iniciarGA(matriz); 
+                iniciarGA(matriz, numGeracoesMax, limiteParada); 
             }, 50);
         });
 
@@ -314,13 +337,11 @@
             logEl.scrollTop = logEl.scrollHeight; 
         }
 
-        function iniciarGA(matrizDistancias) { 
+        function iniciarGA(matrizDistancias, numGeracoesMax, limiteParada) { 
             log("Iniciando Algoritmo Genético...");
 
             const N = matrizDistancias.length;
-            const numGeracoesMax = 100; 
             const tamTorneioFixo = 3; 
-            const limiteGeracoesSemMelhoria = 5;
             let geracoesSemMelhoria = 0;
 
             let tamPopulacao = fibonacci(N);
@@ -334,7 +355,7 @@
             }
 
             log(`Gerações Máximas: ${numGeracoesMax}`);
-            log(`Parada Antecipada: ${limiteGeracoesSemMelhoria} gerações sem melhoria.`);
+            log(`Parada Antecipada: ${limiteParada} gerações sem melhoria.`);
             log(`Tamanho do Torneio: ${tamTorneio} (fixo em 3, ajustado se necessário)`);
             log("---");
 
@@ -395,8 +416,8 @@
                     geracoesSemMelhoria++;
                 }
 
-                if (geracoesSemMelhoria >= limiteGeracoesSemMelhoria) {
-                    log(`Geração ${g}: Parando. A melhor rota não muda há ${limiteGeracoesSemMelhoria} gerações.`);
+                if (geracoesSemMelhoria >= limiteParada) {
+                    log(`Geração ${g}: Parando. A melhor rota não muda há ${limiteParada} gerações.`);
                     break; 
                 }
             } 
