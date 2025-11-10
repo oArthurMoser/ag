@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,17 +11,26 @@
         /* Estilo para os inputs da matriz */
         .matrix-input {
             @apply h-10 text-center border border-gray-300 rounded-md p-1;
-            width: 50px; /* Largura exata de 50px */
+            width: 50px;
+            /* Largura exata de 50px */
         }
+
         .matrix-input:disabled {
             @apply bg-gray-100 text-gray-500;
         }
+
         .matrix-header {
             @apply h-10 flex items-center justify-center font-bold text-gray-600;
-            width: 50px; /* Largura exata de 50px */
+            width: 50px;
+            /* Largura exata de 50px */
+        }
+
+        .matrix-input:disabled {
+            background: #efefef;
         }
     </style>
 </head>
+
 <body class="bg-gray-50 font-sans p-6 md:p-10">
 
     <div class="max-w-7xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden">
@@ -32,18 +42,22 @@
 
         <!-- Corpo Principal -->
         <main class="p-6 md:p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
+
             <!-- Coluna de Configuração (Esquerda) -->
             <div class="lg:col-span-1 space-y-6">
                 <!-- Seção 1: Cidades -->
                 <section class="bg-gray-50 p-5 rounded-lg border">
                     <h2 class="text-xl font-semibold text-gray-700 mb-4">1. Configurar Cidades</h2>
-                    <label for="numCidades" class="block text-sm font-medium text-gray-600 mb-2">Número de Cidades (3 a 20):</label>
-                    <input type="number" id="numCidades" min="3" max="20" value="7" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
-                    <button id="btnGerarMatriz" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300 mt-4">
+                    <label for="numCidades" class="block text-sm font-medium text-gray-600 mb-2">Número de Cidades (3 a
+                        20):</label>
+                    <input type="number" id="numCidades" min="3" max="20" value="7"
+                        class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
+                    <button id="btnGerarMatriz"
+                        class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300 mt-4">
                         Gerar Matriz de Distâncias
                     </button>
-                    <button id="btnPreencherExemplo" class="w-full bg-gray-400 text-white py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300 mt-2 text-sm">
+                    <button id="btnPreencherExemplo"
+                        class="w-full bg-gray-400 text-white py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300 mt-2 text-sm">
                         Usar Exemplo (7 Cidades)
                     </button>
                 </section>
@@ -60,10 +74,11 @@
                         </div>
                     </div>
                 </section>
-                
+
                 <!-- Seção 3: Execução -->
                 <section>
-                    <button id="btnIniciar" class="w-full bg-green-600 text-white py-3 px-6 rounded-md hover:bg-green-700 transition duration-300 text-lg font-semibold shadow-lg">
+                    <button id="btnIniciar"
+                        class="w-full bg-green-600 text-white py-3 px-6 rounded-md hover:bg-green-700 transition duration-300 text-lg font-semibold shadow-lg">
                         Iniciar Algoritmo
                     </button>
                 </section>
@@ -74,12 +89,14 @@
                 <!-- Seção da Matriz de Distâncias -->
                 <section class="bg-gray-50 p-5 rounded-lg border">
                     <h2 class="text-xl font-semibold text-gray-700 mb-4">Matriz de Distâncias (Simétrica)</h2>
-                    <p class="text-sm text-gray-500 mb-4">Preencha apenas a diagonal superior. A diagonal inferior será espelhada automaticamente.</p>
+                    <p class="text-sm text-gray-500 mb-4">Preencha apenas a diagonal superior. A diagonal inferior será
+                        espelhada automaticamente.</p>
                     <div id="matrizContainer" class="overflow-x-auto">
                         <!-- A matriz será gerada aqui pelo JavaScript -->
                     </div>
                     <!-- Novo Botão para Gerar Matriz Aleatória -->
-                    <button id="btnGerarAleatoria" class="w-full bg-yellow-500 text-white py-2 px-4 rounded-md hover:bg-yellow-600 transition duration-300 mt-4 text-sm font-medium">
+                    <button id="btnGerarAleatoria"
+                        class="w-full bg-yellow-500 text-white py-2 px-4 rounded-md hover:bg-yellow-600 transition duration-300 mt-4 text-sm font-medium">
                         Gerar Matriz Aleatória
                     </button>
                 </section>
@@ -88,7 +105,9 @@
                 <section class="bg-gray-50 p-5 rounded-lg border">
                     <h2 class="text-xl font-semibold text-gray-700 mb-4">Resultados</h2>
                     <div id="loading" class="hidden text-center py-4">
-                        <div class="inline-block w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                        <div
+                            class="inline-block w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin">
+                        </div>
                         <p class="text-gray-600 mt-2">Calculando...</p>
                     </div>
                     <div id="resultados" class="hidden space-y-4">
@@ -102,7 +121,8 @@
                         </div>
                         <div class="pt-4">
                             <h3 class="text-md font-medium text-gray-600">Log de Execução:</h3>
-                            <pre id="log" class="bg-gray-900 text-white text-sm p-4 rounded-md h-60 overflow-y-auto font-mono"></pre>
+                            <pre id="log"
+                                class="bg-gray-900 text-white text-sm p-4 rounded-md h-60 overflow-y-auto font-mono"></pre>
                         </div>
                     </div>
                 </section>
@@ -117,10 +137,10 @@
         const btnPreencherExemploEl = document.getElementById('btnPreencherExemplo');
         const matrizContainerEl = document.getElementById('matrizContainer');
         const btnGerarAleatoriaEl = document.getElementById('btnGerarAleatoria'); // Novo botão
-        
+
         // Parâmetros removidos da UI
         // const tamTorneioEl = document.getElementById('tamTorneio');
-        
+
         const btnIniciarEl = document.getElementById('btnIniciar');
         const loadingEl = document.getElementById('loading');
         const resultadosEl = document.getElementById('resultados');
@@ -163,11 +183,11 @@
                 alert("Matriz inválida. Verifique se todas as distâncias da diagonal superior foram preenchidas.");
                 return;
             }
-            
+
             // Parâmetros agora são fixos, não precisamos ler da UI
             // const tamTorneio = parseInt(tamTorneioEl.value);
             // Validação do torneio removida
-            
+
             // Limpa UI de resultados anteriores
             logEl.textContent = '';
             resultadosEl.classList.add('hidden');
@@ -285,18 +305,18 @@
                 for (let j = i + 1; j < N; j++) { // Apenas diagonal superior
                     const cell = document.getElementById(`cell-${i}-${j}`);
                     const cellSimetrica = document.getElementById(`cell-${j}-${i}`);
-                    
+
                     if (cell && distancias[i] && distancias[i][j] !== undefined) {
                         const valor = distancias[i][j];
                         cell.value = valor;
-                        if(cellSimetrica) {
+                        if (cellSimetrica) {
                             cellSimetrica.value = valor;
                         }
                     }
                 }
             }
         }
-        
+
         /**
          * Nova função para gerar distâncias aleatórias.
          */
@@ -306,10 +326,10 @@
                 for (let j = i + 1; j < tamanho; j++) { // Apenas diagonal superior
                     const cell = document.getElementById(`cell-${i}-${j}`);
                     const cellSimetrica = document.getElementById(`cell-${j}-${i}`);
-                    
+
                     // Distância aleatória inteira entre 10 e 500
-                    const distancia = Math.floor(Math.random() * 491) + 10; 
-                    
+                    const distancia = Math.floor(Math.random() * 491) + 10;
+
                     if (cell && cellSimetrica) {
                         cell.value = distancia;
                         cellSimetrica.value = distancia;
@@ -318,7 +338,7 @@
             }
             log("Matriz aleatória preenchida.");
         }
-        
+
         // --- Funções Auxiliares ---
 
         /**
@@ -338,7 +358,7 @@
         function fibonacci(n) {
             if (n <= 1) return 1;
             // Corrigido para Fib(1)=1, Fib(2)=1, Fib(3)=2...
-            if (n === 2) return 1; 
+            if (n === 2) return 1;
             let a = 1, b = 1;
             for (let i = 3; i <= n; i++) {
                 let temp = a + b;
@@ -364,15 +384,15 @@
          */
         function iniciarGA(matrizDistancias) { // tamTorneio removido
             log("Iniciando Algoritmo Genético...");
-            
+
             const N = matrizDistancias.length;
             const numGeracoes = 100; // Número de gerações fixo
             const tamTorneioFixo = 3; // Tamanho do torneio fixo
-            
+
             // 1. Cálculo da População (Fibonacci) - SEM PISO
             let tamPopulacao = fibonacci(N);
             log(`Tamanho da População: Fib(${N}) = ${tamPopulacao} rotas.`);
-            
+
             // 2. Ajuste do Tamanho do Torneio (Segurança)
             let tamTorneio = tamTorneioFixo; // Usa o valor fixo
             if (tamPopulacao < tamTorneio) {
@@ -380,7 +400,7 @@
                 tamTorneio = tamPopulacao;
                 log(`Ajustando torneio para ${tamTorneio}.`);
             }
-            
+
             log(`Número de Gerações: ${numGeracoes} (fixo)`);
             log(`Tamanho do Torneio: ${tamTorneio} (fixo em 3, ajustado se necessário)`);
             log("---");
@@ -388,7 +408,7 @@
             // 3. Geração da População Inicial
             let populacao = [];
             const cidadesBase = Array.from({ length: N }, (_, i) => i + 1); // [1, 2, ..., N]
-            
+
             for (let i = 0; i < tamPopulacao; i++) {
                 const cidadesEmbaralhadas = embaralhar([...cidadesBase.slice(1)]);
                 const rota = [1, ...cidadesEmbaralhadas, 1]; // [1, ..., 1]
@@ -427,9 +447,9 @@
                         rota: filho1Mutado,
                         fitness: 1 / calcularDistanciaTotal(filho1Mutado, matrizDistancias)
                     });
-                    
+
                     if (novaPopulacao.length < tamPopulacao) {
-                         novaPopulacao.push({
+                        novaPopulacao.push({
                             rota: filho2Mutado,
                             fitness: 1 / calcularDistanciaTotal(filho2Mutado, matrizDistancias)
                         });
@@ -445,7 +465,7 @@
                 // Atualiza o melhor global
                 if (melhorIndividuoAtual.fitness > melhorIndividuoGlobal.fitness) {
                     melhorIndividuoGlobal = melhorIndividuoAtual;
-                    
+
                     // Loga a melhoria
                     if (g % 10 === 0 || g === 1 || g === numGeracoes) {
                         log(`Geração ${g}: Nova Melhor Distância = ${Math.round(1 / melhorIndividuoGlobal.fitness * 100) / 100}`);
@@ -456,7 +476,7 @@
             // 9. Fim
             log("---");
             log("Evolução concluída.");
-            
+
             const distanciaFinal = Math.round(1 / melhorIndividuoGlobal.fitness * 100) / 100;
             const rotaFinal = melhorIndividuoGlobal.rota.join(' -> ');
 
@@ -479,7 +499,7 @@
             let distancia = 0;
             for (let i = 0; i < rota.length - 1; i++) {
                 const cidadeA = rota[i] - 1; // Ajusta para índice 0
-                const cidadeB = rota[i+1] - 1; // Ajusta para índice 0
+                const cidadeB = rota[i + 1] - 1; // Ajusta para índice 0
                 distancia += matriz[cidadeA][cidadeB];
             }
             return distancia;
@@ -494,7 +514,7 @@
                 // Modificação para garantir que o índice aleatório exista
                 const idxAleatorio = Math.floor(Math.random() * populacao.length);
                 const individuo = populacao[idxAleatorio];
-                
+
                 if (melhorDoTorneio === null || individuo.fitness > melhorDoTorneio.fitness) {
                     melhorDoTorneio = individuo;
                 }
@@ -510,12 +530,12 @@
             const p1 = pai1.slice(1, -1);
             const p2 = pai2.slice(1, -1);
             const n = p1.length;
-            
+
             // Se n=0 (ex: 3 cidades, rota [1, 2, 1]), p1 será [2]
             // Se n=1 (rota [1, 2, 1] para N=3), p1=[2], p2=[3]
             // O crossover não faz sentido com menos de 2 cidades mutáveis
             if (n < 2) {
-                 return [pai1, pai2]; // Retorna os pais originais
+                return [pai1, pai2]; // Retorna os pais originais
             }
 
             const f1 = Array(n).fill(-1);
@@ -528,11 +548,11 @@
             if (corte1 > corte2) {
                 [corte1, corte2] = [corte2, corte1];
             } else if (corte1 === corte2) {
-                 // Garante pelo menos 1 item no segmento
-                 corte2 = (corte1 + 1) % n;
-                 if (corte1 > corte2) {
+                // Garante pelo menos 1 item no segmento
+                corte2 = (corte1 + 1) % n;
+                if (corte1 > corte2) {
                     [corte1, corte2] = [corte2, corte1];
-                 }
+                }
             }
 
 
@@ -568,7 +588,7 @@
             }
 
             // Adiciona a cidade 1 de volta ao início e fim
-            return [ [1, ...f1, 1], [1, ...f2, 1] ];
+            return [[1, ...f1, 1], [1, ...f2, 1]];
         }
 
         /**
@@ -582,7 +602,7 @@
             // Escolhe duas posições aleatórias para trocar
             const idx1 = Math.floor(Math.random() * n);
             let idx2 = Math.floor(Math.random() * n);
-            
+
             // Garante que são índices diferentes
             while (idx1 === idx2) {
                 idx2 = Math.floor(Math.random() * n);
@@ -601,4 +621,5 @@
 
     </script>
 </body>
+
 </html>
