@@ -4,552 +4,602 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Caixeiro Viajante - Algoritmo Genético</title>
-    <!-- Carrega o TailwindCSS para estilização -->
+    <!-- Carrega o TailwindCSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Estilo para os inputs da matriz */
         .matrix-input {
-            width: 50px;
-            @apply w-14 h-10 text-center border border-gray-300 rounded-md p-1;
+            @apply h-10 text-center border border-gray-300 rounded-md p-1;
+            width: 50px; /* Largura exata de 50px */
         }
         .matrix-input:disabled {
             @apply bg-gray-100 text-gray-500;
         }
         .matrix-header {
-            @apply w-14 h-10 flex items-center justify-center font-bold text-gray-600;
+            @apply h-10 flex items-center justify-center font-bold text-gray-600;
+            width: 50px; /* Largura exata de 50px */
         }
     </style>
 </head>
 <body class="bg-gray-50 font-sans p-6 md:p-10">
 
-    <div class="max-w-6xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden">
+    <div class="max-w-7xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden">
         <!-- Cabeçalho -->
-        <header class="bg-blue-600 p-6 text-white">
-            <h1 class="text-3xl font-bold">Problema do Caixeiro Viajante</h1>
-            <p class="text-lg opacity-90">Resolvido com Algoritmo Genético (e Fibonacci!)</p>
+        <header class="bg-gray-800 text-white p-6">
+            <h1 class="text-3xl font-bold">Problema do Caixeiro Viajante (TSP)</h1>
+            <p class="text-lg text-gray-300 mt-1">Solução com Algoritmos Genéticos</p>
         </header>
 
+        <!-- Corpo Principal -->
         <main class="p-6 md:p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            <!-- Coluna de Configuração -->
-            <section class="lg:col-span-1 space-y-6">
-                <div class="bg-gray-100 p-5 rounded-lg shadow-inner">
-                    <h2 class="text-xl font-semibold text-gray-800 mb-4">1. Configuração</h2>
-                    
-                    <div>
-                        <label for="numCidades" class="block text-sm font-medium text-gray-700">Número de Cidades (3 a 20):</label>
-                        <input type="number" id="numCidades" value="7" min="3" max="20" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                    </div>
-                    
-                    <button id="btnGerarMatriz" class="mt-4 w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-blue-600 transition-colors">
+            <!-- Coluna de Configuração (Esquerda) -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Seção 1: Cidades -->
+                <section class="bg-gray-50 p-5 rounded-lg border">
+                    <h2 class="text-xl font-semibold text-gray-700 mb-4">1. Configurar Cidades</h2>
+                    <label for="numCidades" class="block text-sm font-medium text-gray-600 mb-2">Número de Cidades (3 a 20):</label>
+                    <input type="number" id="numCidades" min="3" max="20" value="7" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
+                    <button id="btnGerarMatriz" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300 mt-4">
                         Gerar Matriz de Distâncias
                     </button>
-                </div>
-
-                <div class="bg-gray-100 p-5 rounded-lg shadow-inner">
-                    <h2 class="text-xl font-semibold text-gray-800 mb-4">2. Parâmetros do Algoritmo</h2>
-
-                    <div>
-                        <label for="numGeracoes" class="block text-sm font-medium text-gray-700">Número de Gerações:</label>
-                        <input type="number" id="numGeracoes" value="1000" min="10" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                    </div>
-                    <div class="mt-3">
-                        <label for="taxaMutacao" class="block text-sm font-medium text-gray-700">Taxa de Mutação (Ex: 0.02):</label>
-                        <input type="number" id="taxaMutacao" value="0.02" min="0" max="1" step="0.01" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                    </div>
-                    <div class="mt-3">
-                        <label for="taxaCrossover" class="block text-sm font-medium text-gray-700">Taxa de Crossover (Ex: 0.8):</label>
-                        <input type="number" id="taxaCrossover" value="0.8" min="0" max="1" step="0.1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                    </div>
-                    <div class="mt-3">
-                        <p class="block text-sm font-medium text-gray-700">Tamanho do Torneio:</p>
-                        <p class="text-lg font-semibold text-blue-600">3 (conforme definido)</p>
-                    </div>
-                    <div class="mt-3">
-                        <p class="block text-sm font-medium text-gray-700">Tamanho da População:</p>
-                        <p id="infoPopulacao" class="text-lg font-semibold text-blue-600">Fibonacci(N+5) = ?</p>
-                    </div>
-
-                    <button id="btnIniciarGA" class="mt-5 w-full bg-green-600 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-green-700 transition-colors disabled:bg-gray-400">
-                        Iniciar Algoritmo
+                    <button id="btnPreencherExemplo" class="w-full bg-gray-400 text-white py-2 px-4 rounded-md hover:bg-gray-500 transition duration-300 mt-2 text-sm">
+                        Usar Exemplo (7 Cidades)
                     </button>
-                </div>
-            </section>
+                </section>
 
-            <!-- Coluna da Matriz e Resultados -->
-            <section class="lg:col-span-2 space-y-6">
-                <!-- Seção da Matriz -->
-                <div>
-                    <h2 class="text-xl font-semibold text-gray-800 mb-4">3. Matriz de Distâncias</h2>
-                    <div id="matrizContainer" class="p-4 bg-gray-100 rounded-lg shadow-inner overflow-x-auto">
-                        <p class="text-gray-500">Gere a matriz de distâncias primeiro.</p>
-                    </div>
-                    <button id="btnPreencherExemplo" class="mt-2 text-sm text-blue-500 hover:underline">Preencher com exemplo (7 cidades)</button>
-                </div>
-
-                <!-- Seção de Resultados -->
-                <div class="bg-gray-800 text-white p-6 rounded-lg shadow-lg">
-                    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-600 pb-2">Resultados</h2>
-                    
-                    <!-- Status -->
-                    <div id="statusGA" class="mb-4">
-                        <p class="text-lg font-medium text-yellow-400">Status: Aguardando...</p>
-                        <div class="w-full bg-gray-600 rounded-full h-2.5 mt-2">
-                            <div id="progressBar" class="bg-yellow-400 h-2.5 rounded-full transition-all duration-150" style="width: 0%"></div>
+                <!-- Seção 2: Parâmetros do Algoritmo -->
+                <section class="bg-gray-50 p-5 rounded-lg border">
+                    <h2 class="text-xl font-semibold text-gray-700 mb-4">2. Parâmetros do AG (Fixos)</h2>
+                    <div class="space-y-2">
+                        <!-- Input de Torneio removido -->
+                        <div class="text-sm text-gray-500 pt-2">
+                            <p>• População: <strong class="text-gray-700">Fib(N)</strong>.</p>
+                            <p>• Gerações: <strong class="text-gray-700">100</strong>.</p>
+                            <p>• Torneio: <strong class="text-gray-700">3</strong>.</p>
+                            <p>• Crossover (PMX): <strong class="text-gray-700">100%</strong>.</p>
+                            <p>• Mutação (Troca): <strong class="text-gray-700">100%</strong>.</p>
                         </div>
                     </div>
+                </section>
+                
+                <!-- Seção 3: Execução -->
+                <section>
+                    <button id="btnIniciar" class="w-full bg-green-600 text-white py-3 px-6 rounded-md hover:bg-green-700 transition duration-300 text-lg font-semibold shadow-lg">
+                        Iniciar Algoritmo
+                    </button>
+                </section>
+            </div>
 
-                    <!-- Melhor Distância -->
-                    <div class="mb-4">
-                        <p class="text-sm font-medium text-gray-300 uppercase tracking-wider">Melhor Distância Total:</p>
-                        <p id="melhorDistancia" class="text-4xl font-bold text-green-400">0</p>
+            <!-- Coluna de Matriz e Resultados (Direita) -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Seção da Matriz de Distâncias -->
+                <section class="bg-gray-50 p-5 rounded-lg border">
+                    <h2 class="text-xl font-semibold text-gray-700 mb-4">Matriz de Distâncias (Simétrica)</h2>
+                    <p class="text-sm text-gray-500 mb-4">Preencha apenas a diagonal superior. A diagonal inferior será espelhada automaticamente.</p>
+                    <div id="matrizContainer" class="overflow-x-auto">
+                        <!-- A matriz será gerada aqui pelo JavaScript -->
                     </div>
+                    <!-- Novo Botão para Gerar Matriz Aleatória -->
+                    <button id="btnGerarAleatoria" class="w-full bg-yellow-500 text-white py-2 px-4 rounded-md hover:bg-yellow-600 transition duration-300 mt-4 text-sm font-medium">
+                        Gerar Matriz Aleatória
+                    </button>
+                </section>
 
-                    <!-- Melhor Rota -->
-                    <div>
-                        <p class="text-sm font-medium text-gray-300 uppercase tracking-wider">Melhor Rota Encontrada:</p>
-                        <p id="melhorRota" class="text-xl font-mono break-words">(Iniciando e terminando na Cidade 0)</p>
+                <!-- Seção de Resultados -->
+                <section class="bg-gray-50 p-5 rounded-lg border">
+                    <h2 class="text-xl font-semibold text-gray-700 mb-4">Resultados</h2>
+                    <div id="loading" class="hidden text-center py-4">
+                        <div class="inline-block w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                        <p class="text-gray-600 mt-2">Calculando...</p>
                     </div>
-                </div>
-            </section>
+                    <div id="resultados" class="hidden space-y-4">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-600">Melhor Rota Encontrada:</h3>
+                            <p id="melhorRota" class="text-blue-600 font-mono text-lg break-words"></p>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-600">Distância Total:</h3>
+                            <p id="melhorDistancia" class="text-blue-600 font-mono text-2xl font-bold"></p>
+                        </div>
+                        <div class="pt-4">
+                            <h3 class="text-md font-medium text-gray-600">Log de Execução:</h3>
+                            <pre id="log" class="bg-gray-900 text-white text-sm p-4 rounded-md h-60 overflow-y-auto font-mono"></pre>
+                        </div>
+                    </div>
+                </section>
+            </div>
         </main>
     </div>
 
-    <script>
+    <script type="module">
         // --- Elementos da UI ---
-        const btnGerarMatriz = document.getElementById('btnGerarMatriz');
-        const btnIniciarGA = document.getElementById('btnIniciarGA');
-        const btnPreencherExemplo = document.getElementById('btnPreencherExemplo');
-        const numCidadesInput = document.getElementById('numCidades');
-        const matrizContainer = document.getElementById('matrizContainer');
-        const infoPopulacao = document.getElementById('infoPopulacao');
+        const numCidadesEl = document.getElementById('numCidades');
+        const btnGerarMatrizEl = document.getElementById('btnGerarMatriz');
+        const btnPreencherExemploEl = document.getElementById('btnPreencherExemplo');
+        const matrizContainerEl = document.getElementById('matrizContainer');
+        const btnGerarAleatoriaEl = document.getElementById('btnGerarAleatoria'); // Novo botão
         
-        // --- Elementos de Resultado ---
-        const statusGA = document.getElementById('statusGA').querySelector('p');
-        const progressBar = document.getElementById('progressBar');
-        const melhorDistancia = document.getElementById('melhorDistancia');
-        const melhorRota = document.getElementById('melhorRota');
-
-        // --- Variáveis Globais do AG ---
-        let distMatrix = [];
-        let numCidades = 0;
-        const TOURNAMENT_SIZE = 3;
-        let memoFib = {}; // Memoização para Fibonacci
-
-        // --- Lógica da UI ---
-
-        btnGerarMatriz.addEventListener('click', () => {
-            gerarGridMatriz();
-            atualizarInfoPopulacao();
-        });
+        // Parâmetros removidos da UI
+        // const tamTorneioEl = document.getElementById('tamTorneio');
         
-        btnPreencherExemplo.addEventListener('click', preencherExemplo);
-        numCidadesInput.addEventListener('change', atualizarInfoPopulacao);
-        btnIniciarGA.addEventListener('click', iniciarGA);
+        const btnIniciarEl = document.getElementById('btnIniciar');
+        const loadingEl = document.getElementById('loading');
+        const resultadosEl = document.getElementById('resultados');
+        const melhorRotaEl = document.getElementById('melhorRota');
+        const melhorDistanciaEl = document.getElementById('melhorDistancia');
+        const logEl = document.getElementById('log');
 
-        // Inicializa no carregamento
-        document.addEventListener('DOMContentLoaded', () => {
-            gerarGridMatriz();
-            atualizarInfoPopulacao();
-        });
+        // --- Variáveis Globais ---
+        let N = 0; // Número de cidades
 
-        /**
-         * Gera o grid de inputs para a matriz de distância.
-         */
-        function gerarGridMatriz() {
-            numCidades = parseInt(numCidadesInput.value);
-            if (numCidades < 3 || numCidades > 20) {
-                // MODIFICAÇÃO: Troquei o alert() por um modal customizado ou log, mas alert é o requisito antigo.
-                // Vou manter o alert por enquanto, conforme a estrutura original, mas idealmente seria um modal.
-                alert("Número de cidades deve ser entre 3 e 20.");
+        // --- Listeners de Eventos ---
+        btnGerarMatrizEl.addEventListener('click', () => {
+            N = parseInt(numCidadesEl.value);
+            if (N < 3 || N > 20) {
+                alert("Por favor, insira um número de cidades entre 3 e 20.");
                 return;
             }
+            gerarGridMatriz(N);
+        });
 
-            /*
+        btnPreencherExemploEl.addEventListener('click', () => {
+            numCidadesEl.value = 7;
+            N = 7;
+            gerarGridMatriz(N);
+            preencherExemplo();
+        });
 
-            <div style="display: grid;grid-template-columns: repeat(8, auto);gap: 4px;justify-items: center;align-items: center;justify-content: center;align-content: center;">
+        // Listener para o novo botão
+        btnGerarAleatoriaEl.addEventListener('click', () => {
+            if (N < 3) {
+                alert("Gere a matriz primeiro (mínimo 3 cidades).");
+                return;
+            }
+            gerarMatrizAleatoria(N);
+        });
 
-            */
+        btnIniciarEl.addEventListener('click', () => {
+            const matriz = lerMatrizDaUI();
+            if (!matriz) {
+                alert("Matriz inválida. Verifique se todas as distâncias da diagonal superior foram preenchidas.");
+                return;
+            }
+            
+            // Parâmetros agora são fixos, não precisamos ler da UI
+            // const tamTorneio = parseInt(tamTorneioEl.value);
+            // Validação do torneio removida
+            
+            // Limpa UI de resultados anteriores
+            logEl.textContent = '';
+            resultadosEl.classList.add('hidden');
+            loadingEl.classList.remove('hidden');
 
-            matrizContainer.innerHTML = '';
+            // Inicia o GA (com um pequeno delay para a UI atualizar)
+            setTimeout(() => {
+                iniciarGA(matriz); // Não precisa mais passar o tamTorneio
+            }, 50);
+        });
+
+        // --- Funções da UI ---
+
+        /**
+         * Gera o grid HTML para a matriz de distâncias.
+         * Apenas a diagonal superior (j > i) é editável.
+         */
+        function gerarGridMatriz(tamanho) {
+            matrizContainerEl.innerHTML = ''; // Limpa o container
             const grid = document.createElement('div');
             grid.style.display = 'grid';
-            grid.style.gridTemplateColumns = `repeat(${numCidades + 1}, auto)`;
+            grid.style.gridTemplateColumns = `repeat(${tamanho + 1}, auto)`;
             grid.style.gap = '4px';
-            grid.style.justifyItems = 'center';
-            grid.style.alignItems = 'center';
-            grid.style.justifyContent = 'center';
-            grid.style.alignContent = 'center';
-            
 
-            // Cabeçalho (Colunas)
+            // Cabeçalho (colunas)
             grid.appendChild(document.createElement('div')); // Canto vazio
-            for (let j = 0; j < numCidades; j++) {
+            for (let j = 0; j < tamanho; j++) {
                 const header = document.createElement('div');
                 header.className = 'matrix-header';
-                header.textContent = `${j}`;
+                header.textContent = `${j + 1}`;
                 grid.appendChild(header);
             }
 
             // Linhas
-            for (let i = 0; i < numCidades; i++) {
-                // Cabeçalho (Linha)
+            for (let i = 0; i < tamanho; i++) {
+                // Cabeçalho (linha)
                 const header = document.createElement('div');
                 header.className = 'matrix-header';
-                header.textContent = `${i}`;
+                header.textContent = `${i + 1}`;
                 grid.appendChild(header);
 
                 // Inputs
-                for (let j = 0; j < numCidades; j++) {
+                for (let j = 0; j < tamanho; j++) {
                     const input = document.createElement('input');
                     input.type = 'number';
                     input.id = `cell-${i}-${j}`;
                     input.className = 'matrix-input';
-                    input.min = '0';
+                    input.min = "0";
 
                     if (i === j) {
-                        input.value = '0';
-                        input.disabled = true;
+                        input.value = 0;
+                        input.disabled = true; // Diagonal principal
                     } else if (j < i) {
-                        // MODIFICAÇÃO: Desabilita a diagonal inferior (j < i)
-                        input.disabled = true;
-                        input.classList.add("bg-gray-200"); // Estilo extra para clareza
+                        input.disabled = true; // Diagonal inferior (simétrica)
                     } else {
-                        // MODIFICAÇÃO: Adiciona listener apenas na diagonal superior (j > i)
-                        // para atualizar a diagonal inferior
+                        // É a diagonal superior (j > i), adiciona listener
                         input.addEventListener('input', (e) => {
-                            const symmetricInput = document.getElementById(`cell-${j}-${i}`);
-                            if (symmetricInput) {
-                                symmetricInput.value = e.target.value;
+                            const symmetricCell = document.getElementById(`cell-${j}-${i}`);
+                            if (symmetricCell) {
+                                symmetricCell.value = e.target.value;
                             }
                         });
                     }
                     grid.appendChild(input);
                 }
             }
-            matrizContainer.appendChild(grid);
+            matrizContainerEl.appendChild(grid);
+        }
+
+        /**
+         * Lê a matriz da UI e retorna uma matriz 2D completa.
+         * Valida se todos os campos da diagonal superior estão preenchidos.
+         */
+        function lerMatrizDaUI() {
+            const matriz = Array.from({ length: N }, () => Array(N).fill(0));
+            let valida = true;
+
+            for (let i = 0; i < N; i++) {
+                for (let j = 0; j < N; j++) {
+                    if (i === j) continue; // Diagonal principal é 0
+
+                    const cell = document.getElementById(`cell-${i}-${j}`);
+                    if (!cell) return null; // Erro, grid não foi gerado
+
+                    const valor = parseFloat(cell.value);
+
+                    if (j > i) { // Diagonal superior
+                        if (isNaN(valor) || valor <= 0) {
+                            valida = false; // Precisa ser preenchida
+                        }
+                        matriz[i][j] = valor;
+                        matriz[j][i] = valor; // Espelha na diagonal inferior
+                    }
+                }
+            }
+            return valida ? matriz : null;
         }
 
         /**
          * Preenche a matriz com os dados de exemplo para 7 cidades.
          */
         function preencherExemplo() {
-            numCidadesInput.value = '7';
-            gerarGridMatriz();
-            atualizarInfoPopulacao();
-
-            const exemploValores = [
-                [0, 281, 338, 299, 398, 351, 448],
-                [281, 0, 61, 43, 357, 330, 263],
-                [338, 61, 0, 42, 300, 273, 206],
-                [299, 43, 42, 0, 339, 312, 246],
-                [398, 357, 300, 339, 0, 102, 154],
-                [351, 330, 273, 312, 102, 0, 236],
-                [448, 263, 206, 246, 154, 236, 0]
+            const distancias = [
+                // j=1, j=2, j=3, j=4, j=5, j=6, j=7
+                [0, 281, 338, 299, 398, 351, 448], // i=1
+                [0, 0, 61, 43, 357, 330, 263],   // i=2
+                [0, 0, 0, 42, 300, 273, 206],   // i=3
+                [0, 0, 0, 0, 339, 312, 246],   // i=4
+                [0, 0, 0, 0, 0, 102, 154],   // i=5
+                [0, 0, 0, 0, 0, 0, 236],   // i=6
+                [0, 0, 0, 0, 0, 0, 0]    // i=7
             ];
 
-            for (let i = 0; i < 7; i++) {
-                for (let j = 0; j < 7; j++) {
-                    const input = document.getElementById(`cell-${i}-${j}`);
-                    if (input) {
-                        input.value = exemploValores[i][j];
-                        
-                        // MODIFICAÇÃO: Não precisamos mais preencher ambos os lados,
-                        // mas garantir que o valor esteja lá funciona.
-                        // A lógica de `gerarGridMatriz` já desabilita os campos corretos.
-                        // Esta função simplesmente define os valores.
+            for (let i = 0; i < N; i++) {
+                for (let j = i + 1; j < N; j++) { // Apenas diagonal superior
+                    const cell = document.getElementById(`cell-${i}-${j}`);
+                    const cellSimetrica = document.getElementById(`cell-${j}-${i}`);
+                    
+                    if (cell && distancias[i] && distancias[i][j] !== undefined) {
+                        const valor = distancias[i][j];
+                        cell.value = valor;
+                        if(cellSimetrica) {
+                            cellSimetrica.value = valor;
+                        }
                     }
                 }
             }
         }
         
         /**
-         * Lê a matriz da UI e armazena em `distMatrix`.
+         * Nova função para gerar distâncias aleatórias.
          */
-        function lerMatrizDaUI() {
-            distMatrix = [];
-            for (let i = 0; i < numCidades; i++) {
-                const row = [];
-                for (let j = 0; j < numCidades; j++) {
-                    // MODIFICAÇÃO: Lógica de leitura otimizada
-                    if (i === j) {
-                        row.push(0);
-                        continue;
-                    }
-
-                    // Lê da diagonal superior (habilitada)
-                    let inputId = (i < j) ? `cell-${i}-${j}` : `cell-${j}-${i}`;
-                    const input = document.getElementById(inputId);
+        function gerarMatrizAleatoria(tamanho) {
+            log("Gerando matriz aleatória...");
+            for (let i = 0; i < tamanho; i++) {
+                for (let j = i + 1; j < tamanho; j++) { // Apenas diagonal superior
+                    const cell = document.getElementById(`cell-${i}-${j}`);
+                    const cellSimetrica = document.getElementById(`cell-${j}-${i}`);
                     
-                    if (!input || input.value === '') {
-                        // Aponte para a célula que o usuário deve preencher
-                        alert(`Valor Faltando na Matriz: Célula (${inputId.split('-')[1]}, ${inputId.split('-')[2]})`);
-                        return false; // Falha na leitura
-                    }
-                    row.push(parseInt(input.value));
-                }
-                distMatrix.push(row);
-            }
-
-            // Verificação de simetria (redundante se a UI e a leitura estiverem corretas, mas bom para garantir)
-            for (let i = 0; i < numCidades; i++) {
-                for (let j = i + 1; j < numCidades; j++) {
-                    if (distMatrix[i][j] !== distMatrix[j][i]) {
-                        console.warn(`A matriz lida não é simétrica: (${i},${j}) vs (${j},${i})`);
-                        // Força a simetria (baseado na diagonal superior)
-                        distMatrix[j][i] = distMatrix[i][j];
+                    // Distância aleatória inteira entre 10 e 500
+                    const distancia = Math.floor(Math.random() * 491) + 10; 
+                    
+                    if (cell && cellSimetrica) {
+                        cell.value = distancia;
+                        cellSimetrica.value = distancia;
                     }
                 }
             }
-            
-            return true; // Sucesso
+            log("Matriz aleatória preenchida.");
         }
-
-        // --- Lógica do Algoritmo Genético ---
+        
+        // --- Funções Auxiliares ---
 
         /**
-         * Calcula o n-ésimo número de Fibonacci com memoização.
+         * Retorna um array de 0 a N-1 embaralhado.
+         */
+        function embaralhar(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        /**
+         * Calcula o N-ésimo número da sequência de Fibonacci.
          */
         function fibonacci(n) {
-            if (n in memoFib) return memoFib[n];
-            if (n <= 1) return n;
+            if (n <= 1) return 1;
+            // Corrigido para Fib(1)=1, Fib(2)=1, Fib(3)=2...
+            if (n === 2) return 1; 
+            let a = 1, b = 1;
+            for (let i = 3; i <= n; i++) {
+                let temp = a + b;
+                a = b;
+                b = temp;
+            }
+            return b;
+        }
+
+        /**
+         * Adiciona uma mensagem ao Log da UI.
+         */
+        function log(mensagem) {
+            console.log(mensagem); // Também loga no console do navegador
+            logEl.textContent += `> ${mensagem}\n`;
+            logEl.scrollTop = logEl.scrollHeight; // Auto-scroll
+        }
+
+        // --- Lógica Principal do Algoritmo Genético (AG) ---
+
+        /**
+         * Função principal que executa o Algoritmo Genético.
+         */
+        function iniciarGA(matrizDistancias) { // tamTorneio removido
+            log("Iniciando Algoritmo Genético...");
             
-            memoFib[n] = fibonacci(n - 1) + fibonacci(n - 2);
-            return memoFib[n];
-        }
+            const N = matrizDistancias.length;
+            const numGeracoes = 100; // Número de gerações fixo
+            const tamTorneioFixo = 3; // Tamanho do torneio fixo
+            
+            // 1. Cálculo da População (Fibonacci) - SEM PISO
+            let tamPopulacao = fibonacci(N);
+            log(`Tamanho da População: Fib(${N}) = ${tamPopulacao} rotas.`);
+            
+            // 2. Ajuste do Tamanho do Torneio (Segurança)
+            let tamTorneio = tamTorneioFixo; // Usa o valor fixo
+            if (tamPopulacao < tamTorneio) {
+                log(`Aviso: Tamanho do torneio (${tamTorneio}) é maior que a população (${tamPopulacao}).`);
+                tamTorneio = tamPopulacao;
+                log(`Ajustando torneio para ${tamTorneio}.`);
+            }
+            
+            log(`Número de Gerações: ${numGeracoes} (fixo)`);
+            log(`Tamanho do Torneio: ${tamTorneio} (fixo em 3, ajustado se necessário)`);
+            log("---");
 
-        /**
-         * Atualiza a informação do tamanho da população na UI.
-         */
-        function atualizarInfoPopulacao() {
-            memoFib = {}; // Limpa o cache
-            const n = parseInt(numCidadesInput.value) || 0;
-            // Usamos N+5 para ter um tamanho de população razoável
-            // N=3 -> Fib(8) = 21
-            // N=7 -> Fib(12) = 144
-            // N=20 -> Fib(25) = 75025
-            const popSize = fibonacci(n + 5);
-            infoPopulacao.textContent = `Fibonacci(${n}+5) = ${popSize}`;
-        }
-
-        /**
-         * Ponto de entrada para iniciar o processo do AG.
-         */
-        async function iniciarGA() {
-            if (!lerMatrizDaUI()) {
-                return; // Para se a matriz for inválida
+            // 3. Geração da População Inicial
+            let populacao = [];
+            const cidadesBase = Array.from({ length: N }, (_, i) => i + 1); // [1, 2, ..., N]
+            
+            for (let i = 0; i < tamPopulacao; i++) {
+                const cidadesEmbaralhadas = embaralhar([...cidadesBase.slice(1)]);
+                const rota = [1, ...cidadesEmbaralhadas, 1]; // [1, ..., 1]
+                populacao.push({
+                    rota: rota,
+                    fitness: 1 / calcularDistanciaTotal(rota, matrizDistancias)
+                });
             }
 
-            btnIniciarGA.disabled = true;
-            statusGA.textContent = 'Iniciando...';
-            statusGA.className = 'text-lg font-medium text-blue-400';
-            progressBar.style.width = '0%';
-            progressBar.className = 'bg-blue-400 h-2.5 rounded-full transition-all duration-150';
+            // Guarda o melhor de todos os tempos
+            let melhorIndividuoGlobal = [...populacao].sort((a, b) => b.fitness - a.fitness)[0];
+            log(`Geração 0: Melhor Distância = ${1 / melhorIndividuoGlobal.fitness}`);
 
-            // Parâmetros do AG
-            const numGeracoes = parseInt(document.getElementById('numGeracoes').value);
-            const taxaMutacao = parseFloat(document.getElementById('taxaMutacao').value);
-            const taxaCrossover = parseFloat(document.getElementById('taxaCrossover').value);
-            memoFib = {};
-            const POPULATION_SIZE = fibonacci(numCidades + 5);
-
-            // --- Variáveis de estado do AG ---
-            let population = criarPopulacaoInicial(POPULATION_SIZE);
-            let melhorRotaGlobal = population[0];
-            let melhorDistanciaGlobal = calcularDistancia(melhorRotaGlobal);
-
-            // Loop de Gerações (Assíncrono para não travar a UI)
-            for (let g = 0; g < numGeracoes; g++) {
-                
-                // 1. Cálculo de Fitness
-                const fitnesses = population.map(cromo => 1 / calcularDistancia(cromo));
-
-                // 2. Seleção e Criação da Nova Geração
+            // 4. Loop Evolutivo (Gerações)
+            for (let g = 1; g <= numGeracoes; g++) {
                 let novaPopulacao = [];
 
-                // Elitismo: Mantém o melhor indivíduo da geração anterior
-                let melhorIdxGeracao = 0;
-                let melhorFitnessGeracao = fitnesses[0];
-                for (let i = 1; i < POPULATION_SIZE; i++) {
-                    if (fitnesses[i] > melhorFitnessGeracao) {
-                        melhorFitnessGeracao = fitnesses[i];
-                        melhorIdxGeracao = i;
+                // Mantém o melhor da geração anterior (Elitismo)
+                novaPopulacao.push(melhorIndividuoGlobal);
+
+                // Preenche o resto da nova população
+                while (novaPopulacao.length < tamPopulacao) {
+                    // 5. Seleção (Torneio)
+                    const pai1 = selecaoTorneio(populacao, tamTorneio);
+                    const pai2 = selecaoTorneio(populacao, tamTorneio);
+
+                    // 6. Crossover (PMX) - Taxa de 100%
+                    const [filho1Rota, filho2Rota] = crossoverPMX(pai1.rota, pai2.rota);
+
+                    // 7. Mutação (Troca) - Taxa de 100%
+                    const filho1Mutado = mutacaoTroca(filho1Rota);
+                    const filho2Mutado = mutacaoTroca(filho2Rota);
+
+                    // 8. Fitness dos filhos
+                    novaPopulacao.push({
+                        rota: filho1Mutado,
+                        fitness: 1 / calcularDistanciaTotal(filho1Mutado, matrizDistancias)
+                    });
+                    
+                    if (novaPopulacao.length < tamPopulacao) {
+                         novaPopulacao.push({
+                            rota: filho2Mutado,
+                            fitness: 1 / calcularDistanciaTotal(filho2Mutado, matrizDistancias)
+                        });
                     }
                 }
-                
+
+                // Atualiza a população
+                populacao = novaPopulacao;
+
+                // Encontra o melhor da geração atual
+                const melhorIndividuoAtual = [...populacao].sort((a, b) => b.fitness - a.fitness)[0];
+
                 // Atualiza o melhor global
-                let melhorDistanciaGeracao = 1 / melhorFitnessGeracao;
-                if (melhorDistanciaGeracao < melhorDistanciaGlobal) {
-                    melhorDistanciaGlobal = melhorDistanciaGeracao;
-                    melhorRotaGlobal = [...population[melhorIdxGeracao]];
-                }
-                
-                // Adiciona o melhor (Elitismo)
-                novaPopulacao.push([...population[melhorIdxGeracao]]); 
-
-                // 3. Crossover e Mutação
-                while (novaPopulacao.length < POPULATION_SIZE) {
-                    // Seleção por Torneio
-                    const pai1 = selecaoTorneio(population, fitnesses);
-                    const pai2 = selecaoTorneio(population, fitnesses);
-
-                    let filho;
-                    // Crossover
-                    if (Math.random() < taxaCrossover) {
-                        filho = crossover(pai1, pai2);
-                    } else {
-                        // Se não houver crossover, clona um dos pais
-                        filho = [...pai1]; 
+                if (melhorIndividuoAtual.fitness > melhorIndividuoGlobal.fitness) {
+                    melhorIndividuoGlobal = melhorIndividuoAtual;
+                    
+                    // Loga a melhoria
+                    if (g % 10 === 0 || g === 1 || g === numGeracoes) {
+                        log(`Geração ${g}: Nova Melhor Distância = ${Math.round(1 / melhorIndividuoGlobal.fitness * 100) / 100}`);
                     }
-
-                    // Mutação
-                    mutacao(filho, taxaMutacao);
-                    
-                    novaPopulacao.push(filho);
                 }
+            } // Fim do loop de gerações
 
-                population = novaPopulacao;
-
-                // 4. Atualizar UI (a cada X gerações para performance)
-                if (g % 20 === 0 || g === numGeracoes - 1) {
-                    const progresso = ((g + 1) / numGeracoes) * 100;
-                    statusGA.textContent = `Geração: ${g + 1} / ${numGeracoes}`;
-                    progressBar.style.width = `${progresso}%`;
-                    
-                    melhorDistancia.textContent = melhorDistanciaGlobal.toFixed(0);
-                    melhorRota.textContent = `0 -> ${melhorRotaGlobal.join(' -> ')} -> 0`;
-                    
-                    // Permite que a UI respire
-                    await new Promise(r => setTimeout(r, 0)); 
-                }
-            }
-
-            // Conclusão
-            statusGA.textContent = 'Concluído!';
-            statusGA.className = 'text-lg font-medium text-green-400';
-            progressBar.className = 'bg-green-400 h-2.5 rounded-full';
-            btnIniciarGA.disabled = false;
-        }
-
-        /**
-         * Cria um cromossomo (rota) aleatório.
-         * A rota sempre começa e termina em 0. O cromossomo representa as cidades intermediárias.
-         */
-        function criarCromossomo() {
-            // Cria um array de cidades [1, 2, 3, ..., numCidades-1]
-            let cidades = [];
-            for (let i = 1; i < numCidades; i++) {
-                cidades.push(i);
-            }
+            // 9. Fim
+            log("---");
+            log("Evolução concluída.");
             
-            // Embaralha (Fisher-Yates shuffle)
-            for (let i = cidades.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [cidades[i], cidades[j]] = [cidades[j], cidades[i]];
-            }
-            return cidades;
+            const distanciaFinal = Math.round(1 / melhorIndividuoGlobal.fitness * 100) / 100;
+            const rotaFinal = melhorIndividuoGlobal.rota.join(' -> ');
+
+            log(`Melhor Rota: ${rotaFinal}`);
+            log(`Distância Final: ${distanciaFinal}`);
+
+            // Atualiza a UI
+            melhorRotaEl.textContent = rotaFinal;
+            melhorDistanciaEl.textContent = distanciaFinal;
+            loadingEl.classList.add('hidden');
+            resultadosEl.classList.remove('hidden');
         }
 
-        /**
-         * Cria a população inicial com N cromossomos aleatórios.
-         */
-        function criarPopulacaoInicial(tamanho) {
-            let populacao = [];
-            for (let i = 0; i < tamanho; i++) {
-                populacao.push(criarCromossomo());
-            }
-            return populacao;
-        }
+        // --- Operadores do AG ---
 
         /**
-         * Calcula a distância total de um cromossomo (rota).
+         * FITNESS: Calcula a distância total de uma rota.
          */
-        function calcularDistancia(cromossomo) {
+        function calcularDistanciaTotal(rota, matriz) {
             let distancia = 0;
-            let cidadeAtual = 0; // Começa na cidade 0
-
-            // Distância da cidade 0 até a primeira do cromossomo
-            distancia += distMatrix[cidadeAtual][cromossomo[0]];
-            
-            // Distância entre as cidades do cromossomo
-            for (let i = 0; i < cromossomo.length - 1; i++) {
-                distancia += distMatrix[cromossomo[i]][cromossomo[i + 1]];
+            for (let i = 0; i < rota.length - 1; i++) {
+                const cidadeA = rota[i] - 1; // Ajusta para índice 0
+                const cidadeB = rota[i+1] - 1; // Ajusta para índice 0
+                distancia += matriz[cidadeA][cidadeB];
             }
-
-            // Distância da última cidade do cromossomo de volta para a 0
-            distancia += distMatrix[cromossomo[cromossomo.length - 1]][0];
-
             return distancia;
         }
 
         /**
-         * Seleção por Torneio (Tamanho 3, conforme especificado).
+         * SELEÇÃO: Método de Torneio.
          */
-        function selecaoTorneio(populacao, fitnesses) {
-            let melhorIndividuo = null;
-            let melhorFitness = -Infinity;
-
-            for (let i = 0; i < TOURNAMENT_SIZE; i++) {
-                const idx = Math.floor(Math.random() * populacao.length);
-                if (fitnesses[idx] > melhorFitness) {
-                    melhorFitness = fitnesses[idx];
-                    melhorIndividuo = populacao[idx];
+        function selecaoTorneio(populacao, tamTorneio) {
+            let melhorDoTorneio = null;
+            for (let i = 0; i < tamTorneio; i++) {
+                // Modificação para garantir que o índice aleatório exista
+                const idxAleatorio = Math.floor(Math.random() * populacao.length);
+                const individuo = populacao[idxAleatorio];
+                
+                if (melhorDoTorneio === null || individuo.fitness > melhorDoTorneio.fitness) {
+                    melhorDoTorneio = individuo;
                 }
             }
-            return melhorIndividuo;
+            return melhorDoTorneio;
         }
 
         /**
-         * Crossover "Ordered Crossover (OX1)".
-         * Garante que o filho seja uma permutação válida.
+         * CROSSOVER: Partially Mapped Crossover (PMX).
          */
-        function crossover(pai1, pai2) {
-            const tamanho = pai1.length;
-            const filho = new Array(tamanho).fill(-1);
-
-            // 1. Pega um "slice" aleatório do pai1
-            let inicio = Math.floor(Math.random() * tamanho);
-            let fim = Math.floor(Math.random() * tamanho);
-            if (inicio > fim) [inicio, fim] = [fim, inicio];
-
-            const slice = pai1.slice(inicio, fim + 1);
-            for (let i = 0; i <= (fim - inicio); i++) {
-                filho[inicio + i] = slice[i];
+        function crossoverPMX(pai1, pai2) {
+            // Remove o início e fim (cidade 1) para o crossover
+            const p1 = pai1.slice(1, -1);
+            const p2 = pai2.slice(1, -1);
+            const n = p1.length;
+            
+            // Se n=0 (ex: 3 cidades, rota [1, 2, 1]), p1 será [2]
+            // Se n=1 (rota [1, 2, 1] para N=3), p1=[2], p2=[3]
+            // O crossover não faz sentido com menos de 2 cidades mutáveis
+            if (n < 2) {
+                 return [pai1, pai2]; // Retorna os pais originais
             }
 
-            // 2. Preenche o resto com cidades do pai2, na ordem
-            let idxPai2 = 0;
-            let idxFilho = 0;
+            const f1 = Array(n).fill(-1);
+            const f2 = Array(n).fill(-1);
 
-            while (idxFilho < tamanho) {
-                if (filho[idxFilho] !== -1) {
-                    idxFilho++;
-                    continue;
-                }
-                
-                const cidadePai2 = pai2[idxPai2];
-                if (!filho.includes(cidadePai2)) {
-                    filho[idxFilho] = cidadePai2;
-                    idxFilho++;
-                }
-                idxPai2++;
+            // 1. Escolhe pontos de corte
+            let corte1 = Math.floor(Math.random() * n); // <-- CORREÇÃO: de const para let
+            let corte2 = Math.floor(Math.random() * n);
+            // Garante corte1 <= corte2
+            if (corte1 > corte2) {
+                [corte1, corte2] = [corte2, corte1];
+            } else if (corte1 === corte2) {
+                 // Garante pelo menos 1 item no segmento
+                 corte2 = (corte1 + 1) % n;
+                 if (corte1 > corte2) {
+                    [corte1, corte2] = [corte2, corte1];
+                 }
             }
-            return filho;
+
+
+            // Mapeamentos
+            const map1 = {};
+            const map2 = {};
+
+            // 2. Copia o segmento do crossover
+            for (let i = corte1; i <= corte2; i++) {
+                f1[i] = p2[i];
+                f2[i] = p1[i];
+                map1[p2[i]] = p1[i];
+                map2[p1[i]] = p2[i];
+            }
+
+            // 3. Preenche o restante
+            for (let i = 0; i < n; i++) {
+                if (i >= corte1 && i <= corte2) continue;
+
+                // Filho 1
+                let cidade1 = p1[i];
+                while (f1.includes(cidade1)) {
+                    cidade1 = map1[cidade1];
+                }
+                f1[i] = cidade1;
+
+                // Filho 2
+                let cidade2 = p2[i];
+                while (f2.includes(cidade2)) {
+                    cidade2 = map2[cidade2];
+                }
+                f2[i] = cidade2;
+            }
+
+            // Adiciona a cidade 1 de volta ao início e fim
+            return [ [1, ...f1, 1], [1, ...f2, 1] ];
         }
 
         /**
-         * Mutação por troca (Swap Mutation).
-         * Troca duas cidades de posição.
+         * MUTAÇÃO: Troca (Swap Mutation).
          */
-        function mutacao(cromossomo, taxa) {
-            if (Math.random() < taxa) {
-                const idx1 = Math.floor(Math.random() * cromossomo.length);
-                const idx2 = Math.floor(Math.random() * cromossomo.length);
-                
-                // Troca
-                [cromossomo[idx1], cromossomo[idx2]] = [cromossomo[idx2], cromossomo[idx1]];
+        function mutacaoTroca(rota) {
+            const rotaMutavel = rota.slice(1, -1); // Remove 1 do início e fim
+            const n = rotaMutavel.length;
+            if (n < 2) return rota; // Não pode mutar
+
+            // Escolhe duas posições aleatórias para trocar
+            const idx1 = Math.floor(Math.random() * n);
+            let idx2 = Math.floor(Math.random() * n);
+            
+            // Garante que são índices diferentes
+            while (idx1 === idx2) {
+                idx2 = Math.floor(Math.random() * n);
             }
+
+            // Troca
+            [rotaMutavel[idx1], rotaMutavel[idx2]] = [rotaMutavel[idx2], rotaMutavel[idx1]];
+
+            // Retorna a rota completa
+            return [1, ...rotaMutavel, 1];
         }
+
+        // --- Inicialização ---
+        // Gera a matriz para o valor padrão (7) ao carregar a página
+        btnGerarMatrizEl.click();
 
     </script>
 </body>
